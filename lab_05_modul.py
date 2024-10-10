@@ -99,3 +99,4 @@ def beleptetes():
         if jelszo_ellenorzese(_jelszo):
             ok = True
         return ok
+
