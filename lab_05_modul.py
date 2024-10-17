@@ -26,16 +26,15 @@ def jelszo_ellenorzese(jelszo):
                 break
     return ok
 
+
 def regisztracio():
-
-
-
     def jelszo_bekerese(hosszusag):
         def hossz(_jelszo, min_hossz):
             ok = True
             if len(_jelszo) < min_hossz :
                 ok = False
             return ok
+
         def szamjegyek(_jelszo):
             ok = False
             for betu in _jelszo:
@@ -61,15 +60,11 @@ def regisztracio():
                     break
             return ok
 
-
         jelszo = input("Kérem a jelszót: ")
         while not hossz(jelszo, hosszusag) or not szamjegyek(jelszo) or not kisbetu(jelszo) or not nagybetu(jelszo) or " " in jelszo:
             print("Nem megfelelő a jelszó!")
             jelszo = input("Kérem a jelszót: ")
         return jelszo
-
-
-
 
     def rogzites(email, jelszo):
         with open('dolgozok.txt', 'a', encoding='utf-8') as fajl:
@@ -81,6 +76,7 @@ def regisztracio():
     if ok:
         rogzites(felhasznalo_neve, felhasznalo_jelszo)
     return ok
+
 
 def beleptetes():
     def felhasznalo():
@@ -100,3 +96,11 @@ def beleptetes():
             ok = True
         return ok
 
+    jelszo = felhasznalo()
+    if not jelszo:
+        print("Nem vagy regisztrált felhasználó!")
+    else:
+        if jelszoellenorzes(jelszo):
+            print("Beléphetsz!")
+        else:
+            print("Megtagadjuk a belépést!")
