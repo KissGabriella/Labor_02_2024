@@ -4,5 +4,5 @@ from lab_05_modul import *
 
 
 # főprogram
-#regisztracio()
+regisztracio()
 beleptetes()
