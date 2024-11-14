@@ -4,7 +4,8 @@ class Jelszo:
     def __init__(self, felhasznalo_jelszava = "valamiJelszo123"):
         self.felhasznalo_jelszava = felhasznalo_jelszava
 
-    def jelszo_bekerese(self, hosszusag):
+    def jelszo_vizsgalata(self, hosszusag):
+        jelszo_ok = True
         def hossz(_jelszo, min_hossz):
             ok = True
             if len(_jelszo) < min_hossz :
@@ -36,11 +37,10 @@ class Jelszo:
                     break
             return ok
 
-        jelszo = input("Kérem a jelszót: ")
-        while not hossz(jelszo, hosszusag) or not szamjegyek(jelszo) or not kisbetu(jelszo) or not nagybetu(jelszo) or " " in jelszo:
-            print("Nem megfelelő a jelszó!")
-            jelszo = input("Kérem a jelszót: ")
-        self.felhasznalo_jelszava = jelszo
+        jelszo = self.felhasznalo_jelszava
+        if not hossz(jelszo, hosszusag) or not szamjegyek(jelszo) or not kisbetu(jelszo) or not nagybetu(jelszo) or " " in jelszo:
+            jelszo_ok = False
+        return jelszo_ok
 
     def jelszo_generalasa(self, hossz=8, kisbetu = True, nagybetu = True, szam = True):
         import string
@@ -107,14 +107,19 @@ class Felhasznalo(Jelszo):
         kapcsolat.commit()
         kapcsolat.close()
 
-    def felhasznalo_ell(self):
-        #vagy egy jelszót ad vissza, vagy False
-        pass
-
-# főprogram
-dolgozo = Felhasznalo()
-# dolgozo.jelszo_generalasa()
-# dolgozo.felhasznalonev()
-print(dolgozo.felhasznalo_neve)
-print(dolgozo.felhasznalo_jelszava)
-dolgozo.tarolas()
+    def felh_es_jelszo_ell(self):
+        import sqlite3
+        belepes = False
+        kapcsolat = sqlite3.connect("dolgozok.db")
+        ab = kapcsolat.cursor()
+        nev = self.felhasznalo_neve
+        ab.execute('SELECT * FROM dolgozok WHERE nev= ?', (nev,))
+        rekord = ab.fetchone()
+        if rekord is None:
+            belepes =False
+        else:
+            jelszo = rekord[1]
+            if jelszo == self.felhasznalo_jelszava:
+                belepes = True
+        kapcsolat.close()
+        return belepes

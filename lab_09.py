@@ -1,16 +1,34 @@
+from lab_07_c import *
 from tkinter import *
 from  tkinter import messagebox
 
 def belepes():
 
     def ok_gomb_kezelese():
-        be_ablak.destroy()
+        dolgozo.felhasznalo_neve = f_nev.get()
+        dolgozo.felhasznalo_jelszava = f_jelszo.get()
+        if f_nev.get() == "" or f_jelszo.get() == "":
+            messagebox.showinfo("Hiba", "Valamelyik mező üres", parent=be_ablak)
+        elif " " in f_nev.get():
+            messagebox.showinfo("Hiba", "Szóköz használat az emailben", parent=be_ablak)
+        elif "@" not in f_nev.get():
+            messagebox.showinfo("Hiba", "Hiányzik a @ jel", parent=be_ablak)
+        elif "." not in f_nev.get():
+            messagebox.showinfo("Hiba", "Hiányzik a . jel", parent=be_ablak)
+        else:
+            be_ablak.destroy()
+            if dolgozo.felh_es_jelszo_ell():
+                messagebox.showinfo("Belépés", "Üdvözlünk")
+            else:
+                messagebox.showinfo("Belépés", "Belépés megtagadva")
+                app.destroy()
+
 
     def reg_kerese():
         be_ablak.destroy()
         regisztracio()
 
-    be_ablak = Tk()
+    be_ablak = Toplevel(app)
     be_ablak.title("Beléptetés")
 
     f_nev_cimke = Label(be_ablak, text = "Felhasználó neve (email:)")
@@ -38,12 +56,30 @@ def belepes():
 
 def regisztracio():
     def ok_gomb_kezelese():
-        reg_ablak.destroy()
+        dolgozo.felhasznalo_neve = f_nev.get()
+        dolgozo.felhasznalo_jelszava = f_jelszo.get()
+        if f_nev.get() == "" or f_jelszo.get() == "" or f_jelszo2.get() == "":
+            messagebox.showinfo("Hiba", "Valamelyik mező üres", parent=reg_ablak)
+        elif f_jelszo.get() != f_jelszo2.get():
+            messagebox.showinfo("Hiba", "Nem azonosak a jelszavak", parent=reg_ablak)
+        elif " " in f_nev.get():
+            messagebox.showinfo("Hiba", "Szóköz használat az emailben", parent=reg_ablak)
+        elif "@" not in f_nev.get():
+            messagebox.showinfo("Hiba", "Hiányzik a @ jel", parent=reg_ablak)
+        elif "." not in f_nev.get():
+            messagebox.showinfo("Hiba", "Hiányzik a . jel", parent=reg_ablak)
+        elif not dolgozo.jelszo_vizsgalata(8):
+            messagebox.showinfo("Hiba", "Nem megfelelő a jelszó!", parent=reg_ablak)
+        else:
+            reg_ablak.destroy()
+            dolgozo.tarolas()
 
     def jelszo_gen():
-        pass
+        dolgozo.jelszo_generalasa()
+        f_jelszo.set(dolgozo.felhasznalo_jelszava)
+        f_jelszo2.set(dolgozo.felhasznalo_jelszava)
 
-    reg_ablak = Tk()
+    reg_ablak = Toplevel(app)
     reg_ablak.title("Regisztráció")
 
     f_nev_cimke = Label(reg_ablak, text = "Felhasználó neve (email:)")
@@ -61,7 +97,7 @@ def regisztracio():
     f_jelszo_be = Entry(reg_ablak, textvariable=f_jelszo, width=20)
     f_jelszo2 = StringVar()
     f_jelszo2.set("")
-    f_jelszo2 = Entry(reg_ablak, textvariable=f_jelszo, width=20)
+    f_jelszo2_be = Entry(reg_ablak, textvariable=f_jelszo2, width=20)
 
     f_nev_cimke.grid(row=0, column=0, sticky="E", padx=15)
     f_nev_be.grid(row=0, column=1)
@@ -69,7 +105,7 @@ def regisztracio():
     f_jelszo_be.grid(row=1, column=1)
     jelszo_gen_gomb.grid(row=1, column=2, padx=10)
     f_jelszo2_cimke.grid(row=2, column=0, sticky="E", padx=15)
-    f_jelszo2.grid(row=2, column=1)
+    f_jelszo2_be.grid(row=2, column=1)
     ok_gomb.grid(row=3, column=1, pady=15, columnspan=2,)
 
     reg_ablak.mainloop()
@@ -79,6 +115,9 @@ def nevjegy():
 
 def sugo():
     messagebox.showerror("Súgó", "Még nincs súgó!")
+
+#Main program
+dolgozo = Felhasznalo()
 
 app = Tk()
 app.title("Dolgozói nyilvántartás")
